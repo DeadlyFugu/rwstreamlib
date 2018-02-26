@@ -1,3 +1,10 @@
+/*
+ * File: world.cc
+ * Author: DeadlyFugu
+ * License: zlib
+ * Description: Classes representing BinMesh PLG, Atomic Section, and World sections
+ */
+
 #include "world.hh"
 
 namespace rw {

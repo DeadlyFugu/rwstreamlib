@@ -1,8 +1,10 @@
 /*
  * File: world.hh
  * Author: DeadlyFugu
+ * License: zlib
  * Description: Classes representing BinMesh PLG, Atomic Section, and World sections
  */
+
 #pragma once
 #include "chunk.hh"
 #include "material.hh"

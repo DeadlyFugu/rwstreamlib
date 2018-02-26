@@ -1,5 +1,10 @@
-// buffer.hh: Managed memory blocks
-// Copyright © DeadlyFugu 2016
+/*
+ * File: buffer.hh
+ * Author: DeadlyFugu
+ * License: zlib
+ * Description: Managed memory blocks
+ */
+
 #pragma once
 #include "util.hh"
 #include <string>

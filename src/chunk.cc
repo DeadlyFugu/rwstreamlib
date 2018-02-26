@@ -1,3 +1,11 @@
+/*
+ * File: chunk.cc
+ * Author: DeadlyFugu
+ * License: zlib
+ * Description: Defines classes for various RW section types
+ * (note: terms 'chunk' and 'section' used interchangeably within this library)
+ */
+
 #include "chunk.hh"
 #include "material.hh"
 #include "world.hh"

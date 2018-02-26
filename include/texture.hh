@@ -1,8 +1,10 @@
 /*
  * File: texture.hh
  * Author: DeadlyFugu
+ * License: zlib
  * Description: Classes representing Texture Dictionary, and Texture Native sections
  */
+
 #pragma once
 #include "chunk.hh"
 #include "material.hh"

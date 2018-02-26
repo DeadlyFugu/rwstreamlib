@@ -1,3 +1,10 @@
+/*
+ * File: material.cc
+ * Author: DeadlyFugu
+ * License: zlib
+ * Description: Classes representing MaterialList, Material, and Texture sections
+ */
+
 #include "material.hh"
 #include "util.hh"
 

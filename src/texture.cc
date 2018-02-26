@@ -1,3 +1,10 @@
+/*
+ * File: texture.cc
+ * Author: DeadlyFugu
+ * License: zlib
+ * Description: Classes representing Texture Dictionary, and Texture Native sections
+ */
+
 #include "util.hh"
 #include "chunk.hh"
 #include "texture.hh"

@@ -1,5 +1,10 @@
-// buffer.cc: Managed memory blocks
-// Copyright © Sekien 2016
+/*
+ * File: buffer.cc
+ * Author: DeadlyFugu
+ * License: zlib
+ * Description: Managed memory blocks
+ */
+
 #include "util.hh"
 #include "buffer.hh"
 #include <stdlib.h>

@@ -1,8 +1,10 @@
 /*
  * File: util.hh
  * Author: DeadlyFugu
+ * License: zlib
  * Description: Various utility classes including Vector and IOStreams.
  */
+
 #pragma once
 
 #include <cstddef>

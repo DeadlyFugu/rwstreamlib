@@ -1,8 +1,10 @@
 /*
-* File: section.hh
-* Author: DeadlyFugu
-* Description: Defines classes for various section types
-*/
+ * File: chunk.hh
+ * Author: DeadlyFugu
+ * License: zlib
+ * Description: Defines classes for various RW section types
+ * (note: terms 'chunk' and 'section' used interchangeably within this library)
+ */
 
 #pragma once
 #include "util.hh"

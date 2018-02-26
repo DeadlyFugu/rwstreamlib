@@ -1,3 +1,9 @@
+/*
+ * File: util.cc
+ * Author: DeadlyFugu
+ * License: zlib
+ * Description: Various utility classes including Vector and IOStreams.
+ */
 
 #include "util.hh"
 

@@ -1,8 +1,10 @@
 /*
  * File: material.hh
  * Author: DeadlyFugu
+ * License: zlib
  * Description: Classes representing MaterialList, Material, and Texture sections
  */
+
 #pragma once
 #include "chunk.hh"
 
