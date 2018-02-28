@@ -12,6 +12,7 @@ add_library(rwstream
 		include/material.hh
 		include/texture.hh
 		include/world.hh
+		include/animation.hh
 
 		src/util.cc
 		src/buffer.cc
@@ -19,14 +20,15 @@ add_library(rwstream
 		src/material.cc
 		src/texture.cc
 		src/world.cc
+		src/animation.cc
 )
 
-add_executable(dump_stream
+add_executable(rwdump
 		include/util.hh
 		include/chunk.hh
 		include/buffer.hh
 
-		test/dump_stream.cc
+		test/rwdump.cc
 )
 
-target_link_libraries(dump_stream rwstream)
+target_link_libraries(rwdump rwstream)

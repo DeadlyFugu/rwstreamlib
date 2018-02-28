@@ -12,6 +12,7 @@
 namespace rw {
 	char* getRasterFormatLabel(uint32_t format) {
 		char* buffer = new char[512];
+		buffer[0] = '\0';
 		for (int i = 0; i < 15; i++) {
 			auto idx = TEXTURE_RASTER_FORMAT_INDICES[i];
 			if (idx < RASTER_AUTOMIPMAP ? (format & 0x0f00) == idx : (bool) (format & idx)) {

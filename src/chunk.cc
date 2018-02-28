@@ -10,6 +10,7 @@
 #include "material.hh"
 #include "world.hh"
 #include "texture.hh"
+#include "animation.hh"
 
 #include <unordered_map>
 
@@ -131,6 +132,8 @@ namespace rw {
 
 		chunkTypeLoaders[RW_TEXTURE_DICT] = [](ChunkType type, uint32_t version){return (Chunk*) new TextureDictionary(type, version);};
 		chunkTypeLoaders[RW_TEXTURE_NATIVE] = [](ChunkType type, uint32_t version){return (Chunk*) new TextureNative(type, version);};
+
+		chunkTypeLoaders[RW_ANIM_ANIMATION] = [](ChunkType type, uint32_t version){return (Chunk*) new AnimAnimationChunk(type, version);};
 
 		loadersWereInit = true;
 	}
