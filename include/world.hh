@@ -103,6 +103,7 @@ namespace rw {
 	};
 
 	class PlaneSectionChunk : public AbstractSectionChunk {
+	public:
 		uint32_t type;
 		float value;
 		bool leftIsAtomic;
@@ -112,7 +113,7 @@ namespace rw {
 
 		AbstractSectionChunk* left;
 		AbstractSectionChunk* right;
-	public:
+
 		PlaneSectionChunk(ChunkType type, uint32_t version) : AbstractSectionChunk(type, version) {}
 
 		virtual void dump(util::DumpWriter out);
