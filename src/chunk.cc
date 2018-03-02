@@ -128,6 +128,7 @@ namespace rw {
 
 		chunkTypeLoaders[RW_BINMESH_PLG] = [](ChunkType type, uint32_t version){return (Chunk*) new BinMeshPLGChunk(type, version);};
 		chunkTypeLoaders[RW_ATOMIC_SECTION] = [](ChunkType type, uint32_t version){return (Chunk*) new AtomicSectionChunk(type, version);};
+		chunkTypeLoaders[RW_PLANE_SECTION] = [](ChunkType type, uint32_t version){return (Chunk*) new PlaneSectionChunk(type, version);};
 		chunkTypeLoaders[RW_WORLD] = [](ChunkType type, uint32_t version){return (Chunk*) new WorldChunk(type, version);};
 
 		chunkTypeLoaders[RW_TEXTURE_DICT] = [](ChunkType type, uint32_t version){return (Chunk*) new TextureDictionary(type, version);};

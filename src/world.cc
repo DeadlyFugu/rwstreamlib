@@ -181,6 +181,91 @@ namespace rw {
 		ListChunk::preWriteHook();
 	}
 
+	bool AtomicSectionChunk::isAtomic() {
+		return true;
+	}
+
+	void PlaneSectionChunk::dump(util::DumpWriter out) {
+		out.print("Plane Section:");
+		out.print("  type: %d", type);
+		out.print("  value: %f", value);
+		out.print("  leftIsAtomic: %s", leftIsAtomic ? "yes" : "no");
+		out.print("  rightIsAtomic: %s", leftIsAtomic ? "yes" : "no");
+		out.print("  leftValue: %f", leftValue);
+		out.print("  rightValue: %f", rightValue);
+
+		out.print("");
+		if (left)
+			left->dump(out);
+		else
+			out.print("  left: null");
+
+		out.print("");
+		if (right)
+			right->dump(out);
+		else
+			out.print("  right: null");
+	}
+
+	void PlaneSectionChunk::postReadHook() {
+		bool structWasSeen = false;
+		bool leftWasSeen = false;
+		bool rightWasSeen = false;
+		for (auto child : children) {
+			if (child->type == RW_STRUCT) {
+				if (structWasSeen) {
+					util::logger.warn("Multiple structs found within Plane Section");
+					continue;
+				}
+				structWasSeen = true;
+
+				util::Buffer& content = ((StructChunk*) child)->getBuffer();
+				content.read(&type);
+				content.read(&value);
+				content.read(&leftIsAtomic);
+				content.read(&rightIsAtomic);
+				content.read(&leftValue);
+				content.read(&rightValue);
+			} else if (child->type == RW_ATOMIC_SECTION || child->type == RW_PLANE_SECTION) {
+				if (!leftWasSeen) {
+					leftWasSeen = true;
+
+					left = (AbstractSectionChunk*) child;
+
+					if (leftIsAtomic != left->isAtomic()) {
+						util::logger.warn("Left child type does not match struct in Plane Section");
+					}
+				} else if (!rightWasSeen) {
+					rightWasSeen = true;
+
+					right = (AbstractSectionChunk*) child;
+
+					if (rightIsAtomic != right->isAtomic()) {
+						util::logger.warn("Right child type does not match struct in Plane Section");
+					}
+				} else {
+					util::logger.warn("Extraneous child section in Plane Section");
+				}
+			} else if (child->type == RW_EXTENSION) {
+				// todo: extensions
+			} else {
+				util::logger.warn("Unsupported chunk in Plane Section: %s", getChunkName(child->type));
+			}
+		}
+
+		if (!structWasSeen) {
+			util::logger.warn("Plane Section is missing struct");
+		}
+	}
+
+	void PlaneSectionChunk::preWriteHook() {
+		ListChunk::preWriteHook();
+	}
+
+	bool PlaneSectionChunk::isAtomic() {
+		return false;
+	}
+
 	void WorldChunk::dump(util::DumpWriter out) {
 		out.print("World:");
 		out.print("  unknown a: {0x%x, 0x%x, 0x%x, 0x%x}", unknownA[0], unknownA[1], unknownA[2], unknownA[3]);
@@ -194,13 +279,13 @@ namespace rw {
 		out.print("");
 
 		materialList->dump(out);
-		atomicSection->dump(out);
+		rootSection->dump(out);
 	}
 
 	void WorldChunk::postReadHook() {
 		bool structWasSeen = false;
 		bool materialListSeen = false;
-		bool atomicSectionSeen = false;
+		bool rootSectionSeen = false;
 		for (auto child : children) {
 			if (child->type == RW_STRUCT) {
 				if (structWasSeen) {
@@ -223,17 +308,17 @@ namespace rw {
 				}
 				materialListSeen = true;
 				materialList = (MaterialListChunk*) child;
-			} else if (child->type == RW_ATOMIC_SECTION) {
-				if (atomicSectionSeen) {
-					util::logger.warn("Multiple Atomic Sections found within World");
+			} else if (child->type == RW_ATOMIC_SECTION || child->type == RW_PLANE_SECTION) {
+				if (rootSectionSeen) {
+					util::logger.warn("Multiple root Sections found within World");
 					continue;
 				}
-				atomicSectionSeen = true;
-				atomicSection = (AtomicSectionChunk*) child;
+				rootSectionSeen = true;
+				rootSection = (AbstractSectionChunk*) child;
 			} else if (child->type == RW_EXTENSION) {
 				// todo: extensions
 			} else {
-				util::logger.warn("Unsupported chunk in Texture: %s", getChunkName(child->type));
+				util::logger.warn("Unsupported chunk in World: %s", getChunkName(child->type));
 			}
 		}
 
@@ -243,8 +328,8 @@ namespace rw {
 		if (!materialListSeen) {
 			util::logger.warn("World is missing Material List");
 		}
-		if (!atomicSectionSeen) {
-			util::logger.warn("World is missing Atomic Section");
+		if (!rootSectionSeen) {
+			util::logger.warn("World is missing root Section");
 		}
 	}
 

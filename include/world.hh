@@ -35,7 +35,14 @@ namespace rw {
 		virtual void preWriteHook();
 	};
 
-	class AtomicSectionChunk : public ListChunk {
+	class AbstractSectionChunk : public ListChunk {
+	public:
+		AbstractSectionChunk(ChunkType type, uint32_t version) : ListChunk(type, version) {}
+
+		virtual bool isAtomic() = 0;
+	};
+
+	class AtomicSectionChunk : public AbstractSectionChunk {
 	public:
 		uint32_t modelFlags;
 		uint32_t faceCount;
@@ -82,7 +89,7 @@ namespace rw {
 
 		BinMeshPLGChunk* binMeshPLG; // (null) if extension not present
 
-		AtomicSectionChunk(ChunkType type, uint32_t version) : ListChunk(type, version) {}
+		AtomicSectionChunk(ChunkType type, uint32_t version) : AbstractSectionChunk(type, version) {}
 
 		virtual void dump(util::DumpWriter out);
 
@@ -91,6 +98,32 @@ namespace rw {
 
 		/// sub-classes may override this to implement custom functionality
 		virtual void preWriteHook();
+
+		virtual bool isAtomic() override;
+	};
+
+	class PlaneSectionChunk : public AbstractSectionChunk {
+		uint32_t type;
+		float value;
+		bool leftIsAtomic;
+		bool rightIsAtomic;
+		float leftValue;
+		float rightValue;
+
+		AbstractSectionChunk* left;
+		AbstractSectionChunk* right;
+	public:
+		PlaneSectionChunk(ChunkType type, uint32_t version) : AbstractSectionChunk(type, version) {}
+
+		virtual void dump(util::DumpWriter out);
+
+		/// sub-classes may override this to implement custom functionality
+		virtual void postReadHook();
+
+		/// sub-classes may override this to implement custom functionality
+		virtual void preWriteHook();
+
+		virtual bool isAtomic() override;
 	};
 
 	class WorldChunk : public ListChunk {
@@ -103,7 +136,7 @@ namespace rw {
 		float bboxMin[3];
 
 		MaterialListChunk* materialList;
-		AtomicSectionChunk* atomicSection;
+		AbstractSectionChunk* rootSection;
 
 		WorldChunk(ChunkType type, uint32_t version) : ListChunk(type, version) {}
 
