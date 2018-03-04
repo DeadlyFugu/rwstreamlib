@@ -100,7 +100,12 @@ namespace rw {
 		uint32_t dataSize;
 
 		uint32_t* palette;
-		uint8_t* data;
+
+		struct MipMapData {
+			uint32_t size;
+			uint8_t* data;
+		};
+		std::vector<MipMapData> mipmaps;
 
 		TextureNative(ChunkType type, uint32_t version) : ListChunk(type, version) {}
 

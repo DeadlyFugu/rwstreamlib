@@ -49,19 +49,14 @@ namespace rw {
 		out.print("");
 		if (palette) {
 			out.print("  palette: ...");
+			out.print("");
 		} else {
 			out.print("  palette: none");
+			out.print("");
 		}
-		if (data) {
-			if (out.isVerbose()) {
-				out.print("  data: ...");
-			} else {
-				out.print("  data: <%d bytes>", dataSize);
-			}
-		} else {
-			out.print("  data: none");
+		for (auto& mipmap : mipmaps) {
+			out.print("  mipmap: <%d bytes>", mipmap.size);
 		}
-		out.print("...");
 	}
 
 	void rw::TextureNative::postReadHook() {
@@ -99,7 +94,6 @@ namespace rw {
 						uint8_t mipLevels;
 						uint8_t type;
 						uint8_t compression;
-						uint32_t totalSize;
 					} header;
 					content.read(&header);
 					format = header.format;
@@ -111,7 +105,6 @@ namespace rw {
 					mipLevels = header.mipLevels;
 					type = header.type;
 					compression = header.compression;
-					dataSize = header.totalSize;
 
 					if (format & RASTER_PAL4) {
 						palette = new uint32_t[32];
@@ -121,11 +114,18 @@ namespace rw {
 						content.read(palette, 4 * 256);
 					}
 
-					data = new uint8_t[dataSize];
-					util::logger.info("%d %d", content.remaining(), dataSize);
-					content.read(data, dataSize);
-					if (content.remaining() > 0) {
-						util::logger.warn("%d additional bytes at end of texture", content.remaining());
+					while (content.remaining() >= 4) {
+						mipmaps.emplace_back();
+						auto& mipmap = mipmaps.back();
+
+						content.read(&mipmap.size);
+
+						mipmap.data = new uint8_t[mipmap.size];
+						content.read(mipmap.data, mipmap.size);
+					}
+
+					if (mipmaps.size() != mipLevels) {
+						util::logger.warn("Mismatch between header claiming %d mip levels and actual %d mip levels", mipLevels, mipmaps.size());
 					}
 				} else {
 					util::logger.warn("Unsupported platform: %s", TEXTURE_PLATFORM_ID_LABELS[platformId]);
