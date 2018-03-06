@@ -8,6 +8,7 @@
 #pragma once
 #include "chunk.hh"
 #include "material.hh"
+#include "geometry.hh"
 
 namespace rw {
 	class BinMeshPLGChunk : public StructChunk {
@@ -52,40 +53,10 @@ namespace rw {
 		uint32_t unknownA; // always 0x84d9502f
 		uint32_t unknownB; // always 0
 
-		struct VertexPosition {
-			float x;
-			float y;
-			float z;
-		};
-
-		struct VertexColor {
-			union {
-				struct {
-					uint8_t r;
-					uint8_t g;
-					uint8_t b;
-					uint8_t a;
-				};
-				uint32_t as_int;
-			};
-		};
-
-		struct VertexUVs {
-			float u;
-			float v;
-		};
-
-		struct Face {
-			uint16_t material;
-			uint16_t vertex1;
-			uint16_t vertex2;
-			uint16_t vertex3;
-		};
-
-		std::vector<VertexPosition> vertexPositions;
-		std::vector<VertexColor> vertexColors;
-		std::vector<VertexUVs> vertexUVs;
-		std::vector<Face> faces;
+		std::vector<geom::VertexPosition> vertexPositions;
+		std::vector<geom::VertexColor> vertexColors;
+		std::vector<geom::VertexUVs> vertexUVs;
+		std::vector<geom::Face> faces;
 
 		BinMeshPLGChunk* binMeshPLG; // (null) if extension not present
 

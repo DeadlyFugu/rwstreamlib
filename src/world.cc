@@ -131,25 +131,25 @@ namespace rw {
 				content.read(&unknownB);
 
 				for (int i = 0; i < vertexCount; i++) {
-					VertexPosition position;
+					geom::VertexPosition position;
 					content.read(&position);
 					vertexPositions.push_back(position);
 				}
 
 				for (int i = 0; i < vertexCount; i++) {
-					VertexColor color;
+					geom::VertexColor color;
 					content.read(&color);
 					vertexColors.push_back(color);
 				}
 
 				for (int i = 0; i < vertexCount; i++) {
-					VertexUVs uvs;
+					geom::VertexUVs uvs;
 					content.read(&uvs);
 					vertexUVs.push_back(uvs);
 				}
 
 				for (int i = 0; i < faceCount; i++) {
-					Face face;
+					geom::Face face;
 					content.read(&face);
 					faces.push_back(face);
 				}
@@ -310,7 +310,7 @@ namespace rw {
 				materialList = (MaterialListChunk*) child;
 			} else if (child->type == RW_ATOMIC_SECTION || child->type == RW_PLANE_SECTION) {
 				if (rootSectionSeen) {
-					util::logger.warn("Multiple root Sections found within World");
+					util::logger.warn("Multiple root sections found within World");
 					continue;
 				}
 				rootSectionSeen = true;
@@ -329,7 +329,7 @@ namespace rw {
 			util::logger.warn("World is missing Material List");
 		}
 		if (!rootSectionSeen) {
-			util::logger.warn("World is missing root Section");
+			util::logger.warn("World is missing root section");
 		}
 	}
 

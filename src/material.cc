@@ -148,10 +148,10 @@ namespace rw {
 		ListChunk::preWriteHook();
 	}
 
-	void MaterialListChunk::dump(util::DumpWriter out) {
+	/*void MaterialListChunk::dump(util::DumpWriter out) {
 		// todo: impl
 		ListChunk::dump(out);
-	}
+	}*/
 
 	void MaterialListChunk::postReadHook() {
 		bool structWasSeen = false;

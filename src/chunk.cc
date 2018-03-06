@@ -11,6 +11,7 @@
 #include "world.hh"
 #include "texture.hh"
 #include "animation.hh"
+#include "geometry.hh"
 
 #include <unordered_map>
 
@@ -135,6 +136,12 @@ namespace rw {
 		chunkTypeLoaders[RW_TEXTURE_NATIVE] = [](ChunkType type, uint32_t version){return (Chunk*) new TextureNative(type, version);};
 
 		chunkTypeLoaders[RW_ANIM_ANIMATION] = [](ChunkType type, uint32_t version){return (Chunk*) new AnimAnimationChunk(type, version);};
+
+		chunkTypeLoaders[RW_GEOMETRY] = [](ChunkType type, uint32_t version){return (Chunk*) new GeometryChunk(type, version);};
+		chunkTypeLoaders[RW_GEOMETRY_LIST] = [](ChunkType type, uint32_t version){return (Chunk*) new GeometryListChunk(type, version);};
+		chunkTypeLoaders[RW_FRAME_LIST] = [](ChunkType type, uint32_t version){return (Chunk*) new FrameListChunk(type, version);};
+		chunkTypeLoaders[RW_ATOMIC] = [](ChunkType type, uint32_t version){return (Chunk*) new AtomicChunk(type, version);};
+		chunkTypeLoaders[RW_CLUMP] = [](ChunkType type, uint32_t version){return (Chunk*) new ClumpChunk(type, version);};
 
 		loadersWereInit = true;
 	}

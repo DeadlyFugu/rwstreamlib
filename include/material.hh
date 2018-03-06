@@ -95,7 +95,7 @@ namespace rw {
 
 		MaterialListChunk(ChunkType type, uint32_t version) : ListChunk(type, version) {}
 
-		virtual void dump(util::DumpWriter out);
+		//virtual void dump(util::DumpWriter out);
 
 		/// sub-classes may override this to implement custom functionality
 		virtual void postReadHook();

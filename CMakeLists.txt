@@ -13,6 +13,7 @@ add_library(rwstream
 		include/texture.hh
 		include/world.hh
 		include/animation.hh
+		include/geometry.hh
 
 		src/util.cc
 		src/buffer.cc
@@ -21,6 +22,7 @@ add_library(rwstream
 		src/texture.cc
 		src/world.cc
 		src/animation.cc
+		src/geometry.cc
 )
 
 add_executable(rwdump
