@@ -24,6 +24,14 @@ namespace rw {
 		return buffer;
 	}
 
+	rw::TextureNative::~TextureNative() {
+		if (palette) delete[] palette;
+
+		for (auto& mipmap : mipmaps) {
+			if (mipmap.data) delete[] mipmap.data;
+		}
+	}
+
 	void rw::TextureNative::dump(util::DumpWriter out) {
 		out.print("Texture Native:");
 		out.print("  name: %s", name.c_str());

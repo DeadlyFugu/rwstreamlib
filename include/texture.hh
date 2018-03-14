@@ -107,7 +107,9 @@ namespace rw {
 		};
 		std::vector<MipMapData> mipmaps;
 
-		TextureNative(ChunkType type, uint32_t version) : ListChunk(type, version) {}
+		TextureNative(ChunkType type, uint32_t version) : ListChunk(type, version), palette(nullptr) {}
+
+		virtual ~TextureNative();
 
 		virtual void dump(util::DumpWriter out);
 
