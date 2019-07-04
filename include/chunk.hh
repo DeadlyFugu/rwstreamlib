@@ -65,6 +65,7 @@ enum ChunkType : uint32_t {
 	RW_PARTICLES_PLG       = 0x118,
 	RW_HANIM_PLG           = 0x11E,
 	RW_MATERIAL_EFFECTS_PLG = 0x120,
+	RW_DELTA_MORPH_PLG  = 0x122,
 	RW_PDS_PLG          = 0x131,
 	RW_ADC_PLG          = 0x134,
 	RW_UVANIM_PLG       = 0x135,

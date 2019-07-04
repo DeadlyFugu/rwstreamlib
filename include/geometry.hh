@@ -103,6 +103,8 @@ namespace rw {
 
 		MaterialListChunk* materialList;
 
+		std::vector<Chunk*> extensions;
+
 		GeometryChunk(ChunkType type, uint32_t version) : ListChunk(type, version) {}
 
 		virtual void dump(util::DumpWriter out);
@@ -169,6 +171,7 @@ namespace rw {
 		FrameListChunk* frameList;
 		GeometryListChunk* geometryList;
 		std::vector<AtomicChunk*> atomics;
+		std::vector<Chunk*> extensions;
 
 		ClumpChunk(ChunkType type, uint32_t version) : ListChunk(type, version) {}
 
@@ -176,6 +179,39 @@ namespace rw {
 
 		virtual void postReadHook();
 
+		virtual void preWriteHook();
+	};
+
+	class DeltaMorphPLGChunk : public StructChunk {
+	public:
+		struct DMorphPoint {
+			float x, y, z;
+		};
+
+		struct DMorphTarget {
+			std::string name;
+			uint32_t num1;
+			uint32_t num2;
+
+			std::vector<uint8_t> mapping;
+			std::vector<DMorphPoint> points;
+
+			float unk1;
+			float unk2;
+			float unk3;
+			float unk4;
+		};
+
+		std::vector<DMorphTarget> targets;
+
+		DeltaMorphPLGChunk(ChunkType type, uint32_t version) : StructChunk(type, version) {}
+
+		virtual void dump(util::DumpWriter out);
+
+		/// sub-classes may override this to implement custom functionality
+		virtual void postReadHook();
+
+		/// sub-classes may override this to implement custom functionality
 		virtual void preWriteHook();
 	};
 }

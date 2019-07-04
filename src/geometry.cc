@@ -71,6 +71,11 @@ void rw::GeometryChunk::dump(rw::util::DumpWriter out) {
 		}
 
 		// todo: dump extensions too (store extensions in vector?) (honestly should do that for all types, built into ListChunk)
+
+		for (auto ext : extensions) {
+			out.print("");
+			ext->dump(out);
+		}
 	} else {
 		// todo: non-verbose output
 	}
@@ -172,7 +177,7 @@ void rw::GeometryChunk::postReadHook() {
 			materialListWasSeen = true;
 			materialList = ((MaterialListChunk*) child);
 		} else if (child->type == RW_EXTENSION) {
-			// todo: extensions
+			extensions.push_back(child);
 		} else {
 			util::logger.warn("Unsupported chunk in Geometry: %s", getChunkName(child->type));
 		}
@@ -326,6 +331,10 @@ void rw::ClumpChunk::dump(rw::util::DumpWriter out) {
 		out.print("");
 		atomic->dump(out);
 	}
+	for (auto ext : extensions) {
+		out.print("");
+		ext->dump(out);
+	}
 }
 
 void rw::ClumpChunk::postReadHook() {
@@ -363,7 +372,7 @@ void rw::ClumpChunk::postReadHook() {
 		} else if (child->type == RW_ATOMIC) {
 			atomics.push_back((AtomicChunk*) child);
 		} else if (child->type == RW_EXTENSION) {
-			// todo: extensions
+			extensions.push_back(child);
 		} else {
 			util::logger.warn("Unsupported chunk in Clump: %s", getChunkName(child->type));
 		}
@@ -385,4 +394,95 @@ void rw::ClumpChunk::postReadHook() {
 
 void rw::ClumpChunk::preWriteHook() {
 	ListChunk::preWriteHook();
+}
+
+void rw::DeltaMorphPLGChunk::dump(util::DumpWriter out) {
+	out.print("Delta Morph PLG:");
+	out.print("  target count: %d", targets.size());
+
+	int idx = 0;
+	for (auto& target : targets) {
+		out.print("");
+		out.print("  Target(%d):", idx++);
+		out.print("    name: %s", target.name.c_str());
+		out.print("    num1: %d", target.num1);
+		out.print("    num2: %d", target.num2);
+		if (out.isVerbose()) {
+			out.print("    mapping: {");
+			for (uint8_t byte : target.mapping) {
+				if (byte & 0x80) {
+					out.print("      + %d", byte & 0x7f);
+				} else {
+					out.print("      skip %d", byte & 0x7f);
+				}
+			}
+			out.print("    }");
+		} else {
+			out.print("    mapping: <%d bytes>", target.mapping.size());
+		}
+		if (out.isVerbose()) {
+			out.print("    point count: %d", target.points.size());
+			out.print("    points: {");
+			for (auto& point : target.points) {
+				out.print("      (%f, %f, %f)", point.x, point.y, point.z);
+			}
+			out.print("    }");
+		} else {
+			out.print("    points: <array of %d vec3f>", target.points.size());
+		}
+		out.print("    unk1: %f", target.unk1);
+		out.print("    unk2: %f", target.unk2);
+		out.print("    unk3: %f", target.unk3);
+		out.print("    unk4: %f", target.unk4);
+	}
+}
+
+void rw::DeltaMorphPLGChunk::postReadHook() {
+	data.seek(0);
+
+	uint32_t targetCount;
+	data.read(&targetCount);
+
+	for (int i = 0; i < targetCount; i++) {
+		uint32_t nameLength;
+		data.read(&nameLength);
+
+		char* nameBuffer = new char[nameLength];
+		data.read(nameBuffer, nameLength);
+		std::string name(nameBuffer);
+		delete[] nameBuffer;
+
+		DMorphTarget target;
+		target.name = name;
+		data.read(&target.num1);
+		data.read(&target.num2);
+
+		uint32_t mappingLength;
+		uint32_t pointCount;
+		data.read(&mappingLength);
+		data.read(&pointCount);
+
+		for (int j = 0; j < mappingLength; j++) {
+			uint8_t value;
+			data.read(&value);
+			target.mapping.push_back(value);
+		}
+
+		for (int j = 0; j < pointCount; j++) {
+			DMorphPoint point;
+			data.read(&point);
+			target.points.push_back(point);
+		}
+
+		data.read(&target.unk1);
+		data.read(&target.unk2);
+		data.read(&target.unk3);
+		data.read(&target.unk4);
+
+		targets.push_back(target);
+	}
+}
+
+void rw::DeltaMorphPLGChunk::preWriteHook() {
+	StructChunk::preWriteHook();
 }

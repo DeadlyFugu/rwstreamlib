@@ -142,6 +142,7 @@ namespace rw {
 		chunkTypeLoaders[RW_FRAME_LIST] = [](ChunkType type, uint32_t version){return (Chunk*) new FrameListChunk(type, version);};
 		chunkTypeLoaders[RW_ATOMIC] = [](ChunkType type, uint32_t version){return (Chunk*) new AtomicChunk(type, version);};
 		chunkTypeLoaders[RW_CLUMP] = [](ChunkType type, uint32_t version){return (Chunk*) new ClumpChunk(type, version);};
+		chunkTypeLoaders[RW_DELTA_MORPH_PLG] = [](ChunkType type, uint32_t version){return (Chunk*) new DeltaMorphPLGChunk(type, version);};
 
 		loadersWereInit = true;
 	}
