@@ -47,4 +47,36 @@ namespace rw {
 		/// sub-classes may override this to implement custom functionality
 		virtual void preWriteHook();
 	};
+
+	class DMorphAnimationChunk : public StructChunk {
+	public:
+		uint32_t animationVersion; // should always be 0x100
+		uint32_t interpolationType; // always zero?
+		uint32_t targetCount;
+		uint32_t totalFrameCount;
+
+		struct Frame {
+			float startValue;
+			float endValue;
+			float duration;
+			float oneOverDuration;
+			uint32_t nextId;
+		};
+
+		struct FrameList {
+			std::vector<Frame> frames;
+		};
+
+		std::vector<FrameList> targets;
+
+		DMorphAnimationChunk(ChunkType type, uint32_t version) : StructChunk(type, version) {}
+
+		virtual void dump(util::DumpWriter out);
+
+		/// sub-classes may override this to implement custom functionality
+		virtual void postReadHook();
+
+		/// sub-classes may override this to implement custom functionality
+		virtual void preWriteHook();
+	};
 }

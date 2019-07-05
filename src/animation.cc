@@ -53,4 +53,61 @@ namespace rw {
 	void AnimAnimationChunk::preWriteHook() {
 		StructChunk::preWriteHook();
 	}
+
+	void DMorphAnimationChunk::dump(util::DumpWriter out) {
+		out.print("Delta Morph Animation:");
+		out.print("  version: %d", animationVersion);
+		out.print("  interpolation type: %d", interpolationType);
+		out.print("  target count: %d", targetCount);
+		out.print("  total frame count: %d", totalFrameCount);
+
+		int i = 0;
+		for (auto& target : targets) {
+			out.print("");
+			out.print("  Target(%d):", i++);
+			out.print("    frame count: %d", target.frames.size());
+
+			int j = 0;
+			for (auto& frame : target.frames) {
+				out.print("");
+				out.print("    Frame(%d):", j++);
+				out.print("      start value: %f", frame.startValue);
+				out.print("      end value: %f", frame.startValue);
+				out.print("      duration: %f", frame.duration);
+				out.print("      1/duration: %f", frame.oneOverDuration);
+				out.print("      next id: %d", frame.nextId);
+			}
+		}
+	}
+
+	void DMorphAnimationChunk::postReadHook() {
+		data.seek(12); // skip struct header
+		data.read(&animationVersion);
+		data.read(&interpolationType);
+		data.read(&targetCount);
+		data.read(&totalFrameCount);
+
+		for (int i = 0; i < targetCount; i++) {
+			targets.emplace_back();
+			auto& target = targets.back();
+
+			uint32_t frameCount;
+			data.read(&frameCount);
+
+			for (int j = 0; j < frameCount; j++) {
+				target.frames.emplace_back();
+				auto& frame = target.frames.back();
+
+				data.read(&frame.startValue);
+				data.read(&frame.endValue);
+				data.read(&frame.duration);
+				data.read(&frame.oneOverDuration);
+				data.read(&frame.nextId);
+			}
+		}
+	}
+
+	void DMorphAnimationChunk::preWriteHook() {
+		StructChunk::preWriteHook();
+	}
 }

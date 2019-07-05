@@ -197,10 +197,10 @@ namespace rw {
 			std::vector<DMorphPoint> vertices;
 			std::vector<DMorphPoint> normals;
 
-			float unk1; // likely bounding centre xyz
-			float unk2;
-			float unk3;
-			float unk4; // likely bounding radius
+			float boundX;
+			float boundY;
+			float boundZ;
+			float boundRadius;
 		};
 
 		std::vector<DMorphTarget> targets;

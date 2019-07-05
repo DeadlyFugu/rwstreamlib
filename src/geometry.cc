@@ -439,10 +439,9 @@ void rw::DeltaMorphPLGChunk::dump(util::DumpWriter out) {
 		} else {
 			out.print("    normals: <array of %d vec3f>", target.normals.size());
 		}
-		out.print("    unk1: %f", target.unk1);
-		out.print("    unk2: %f", target.unk2);
-		out.print("    unk3: %f", target.unk3);
-		out.print("    unk4: %f", target.unk4);
+		out.print("    bounding centre: (%f, %f, %f)",
+				  target.boundX, target.boundY, target.boundZ);
+		out.print("    bounding radius: %f", target.boundRadius);
 	}
 }
 
@@ -480,7 +479,7 @@ void rw::DeltaMorphPLGChunk::postReadHook() {
 		for (int j = 0; j < pointCount; j++) {
 			DMorphPoint point;
 			data.read(&point);
-			target.points.push_back(point);
+			target.vertices.push_back(point);
 		}
 
 		if (target.flags & 0x10) {
@@ -491,10 +490,10 @@ void rw::DeltaMorphPLGChunk::postReadHook() {
 			}
 		}
 
-		data.read(&target.unk1);
-		data.read(&target.unk2);
-		data.read(&target.unk3);
-		data.read(&target.unk4);
+		data.read(&target.boundX);
+		data.read(&target.boundY);
+		data.read(&target.boundZ);
+		data.read(&target.boundRadius);
 
 		targets.push_back(target);
 	}

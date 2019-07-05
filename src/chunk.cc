@@ -136,6 +136,7 @@ namespace rw {
 		chunkTypeLoaders[RW_TEXTURE_NATIVE] = [](ChunkType type, uint32_t version){return (Chunk*) new TextureNative(type, version);};
 
 		chunkTypeLoaders[RW_ANIM_ANIMATION] = [](ChunkType type, uint32_t version){return (Chunk*) new AnimAnimationChunk(type, version);};
+		chunkTypeLoaders[RW_DELTA_MORPH_ANIMATION] = [](ChunkType type, uint32_t version){return (Chunk*) new DMorphAnimationChunk(type, version);};
 
 		chunkTypeLoaders[RW_GEOMETRY] = [](ChunkType type, uint32_t version){return (Chunk*) new GeometryChunk(type, version);};
 		chunkTypeLoaders[RW_GEOMETRY_LIST] = [](ChunkType type, uint32_t version){return (Chunk*) new GeometryListChunk(type, version);};
