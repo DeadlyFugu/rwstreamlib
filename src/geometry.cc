@@ -405,7 +405,7 @@ void rw::DeltaMorphPLGChunk::dump(util::DumpWriter out) {
 		out.print("");
 		out.print("  Target(%d):", idx++);
 		out.print("    name: %s", target.name.c_str());
-		out.print("    num1: %d", target.num1);
+		out.print("    flags: %d", target.flags);
 		out.print("    num2: %d", target.num2);
 		if (out.isVerbose()) {
 			out.print("    mapping: {");
@@ -421,14 +421,23 @@ void rw::DeltaMorphPLGChunk::dump(util::DumpWriter out) {
 			out.print("    mapping: <%d bytes>", target.mapping.size());
 		}
 		if (out.isVerbose()) {
-			out.print("    point count: %d", target.points.size());
-			out.print("    points: {");
-			for (auto& point : target.points) {
-				out.print("      (%f, %f, %f)", point.x, point.y, point.z);
+			out.print("    vertex count: %d", target.vertices.size());
+			out.print("    vertices: {");
+			for (auto& vertex : target.vertices) {
+				out.print("      (%f, %f, %f)", vertex.x, vertex.y, vertex.z);
 			}
 			out.print("    }");
 		} else {
-			out.print("    points: <array of %d vec3f>", target.points.size());
+			out.print("    vertices: <array of %d vec3f>", target.vertices.size());
+		}
+		if (out.isVerbose()) {
+			out.print("    normals: {");
+			for (auto& normal : target.normals) {
+				out.print("      (%f, %f, %f)", normal.x, normal.y, normal.z);
+			}
+			out.print("    }");
+		} else {
+			out.print("    normals: <array of %d vec3f>", target.normals.size());
 		}
 		out.print("    unk1: %f", target.unk1);
 		out.print("    unk2: %f", target.unk2);
@@ -454,7 +463,7 @@ void rw::DeltaMorphPLGChunk::postReadHook() {
 
 		DMorphTarget target;
 		target.name = name;
-		data.read(&target.num1);
+		data.read(&target.flags);
 		data.read(&target.num2);
 
 		uint32_t mappingLength;
@@ -472,6 +481,14 @@ void rw::DeltaMorphPLGChunk::postReadHook() {
 			DMorphPoint point;
 			data.read(&point);
 			target.points.push_back(point);
+		}
+
+		if (target.flags & 0x10) {
+			for (int j = 0; j < pointCount; j++) {
+				DMorphPoint point;
+				data.read(&point);
+				target.normals.push_back(point);
+			}
 		}
 
 		data.read(&target.unk1);

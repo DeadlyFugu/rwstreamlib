@@ -190,16 +190,17 @@ namespace rw {
 
 		struct DMorphTarget {
 			std::string name;
-			uint32_t num1;
+			uint32_t flags; // likely same as geom flags
 			uint32_t num2;
 
 			std::vector<uint8_t> mapping;
-			std::vector<DMorphPoint> points;
+			std::vector<DMorphPoint> vertices;
+			std::vector<DMorphPoint> normals;
 
-			float unk1;
+			float unk1; // likely bounding centre xyz
 			float unk2;
 			float unk3;
-			float unk4;
+			float unk4; // likely bounding radius
 		};
 
 		std::vector<DMorphTarget> targets;
